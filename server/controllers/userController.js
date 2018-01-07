@@ -10,7 +10,7 @@ let signIn = (req, res) => {
     email: req.body.email,
     password: req.body.password,
     contact: req.body.contact,
-    role: 'user'
+    role: req.body.role
   })
 
   newUser.save()

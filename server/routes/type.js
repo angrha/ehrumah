@@ -4,12 +4,13 @@ const Type = require('../controllers/typeController');
 const Image = require('../helpers/images');
 
 /* GET home page. */
-router.POST('/create', Image.multer.single('image'), Image.sendUploadToGCS, Type.createType);
-router.GET('/all', Type.getAll);
-router.GET('/detail', Type.getDetail);
-router.GET('/alluser', Type.getAllUser);
-router.GET('/detailuser', Type.getDetailUser);
-router.PUT('/update', Type.updateType);
-router.DELETE('/delete', Type.removeType);
+router.post('/create', Image.multer.single('image'), Image.sendUploadToGCS, Type.createType);
+router.get('/all', Type.getAll);
+router.get('/detail/:id', Type.getDetail);
+router.get('/alluser', Type.getAllUser);
+router.get('/detailuser/:id', Type.getDetailUser);
+router.put('/update/:id', Image.multer.single('image'), Image.sendUploadToGCS, Type.updateType);
+router.put('/nofoto/:id', Type.updateTypeNo);
+router.delete('/remove/:id', Type.removeType);
 
 module.exports = router;

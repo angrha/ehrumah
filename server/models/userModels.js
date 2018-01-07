@@ -13,9 +13,9 @@ const userSchema = new Schema({
   },
   email: {
     type: String,
-    unique: true,
+    unique: [true, 'Email Sudah ada'],
     validate: {
-      valiator: function validateEmail(email) {
+      validator: function validateEmail(email) {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
       },
@@ -25,13 +25,13 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    maxlength: [9, 'The value of path `{PATH}` (`{VALUE}`) exceeds the maximum allowed length ({MAXLENGTH}).'],
+    minlength: [9, 'The value of path {PATH} ({VALUE}) exceeds the maximum allowed length ({MAXLENGTH}).'],
     require: [true, 'Password Required']
   },
   contact: {
     type: String,
-    maxlength: [9, 'The value of path `{PATH}` (`{VALUE}`) exceeds the maximum allowed length ({MAXLENGTH}).'],
-    require: [true, 'Password Required']
+    minlength: [11, 'The value of path `{PATH}` (`{VALUE}`) exceeds the maximum allowed length ({MAXLENGTH}).'],
+    require: [true, 'Contact Required']
   },
   role: {
     type: String,
@@ -40,12 +40,14 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.pre('save', (next) => {
-  const user = this;
-  if (!user.isModified('password')) return next();
+userSchema.pre('save', function(next) {
 
-  let salt = bcrypt.genSaltSync(10);
-  user.password = bcrypt.hashSync(this.password, salt);
+  if (this.isModified('password') || this.isNew) {
+    let salt = bcrypt.genSaltSync(10);
+    this.password = bcrypt.hashSync(this.password, salt);
+    next();
+  }
+
   next();
 
 })
