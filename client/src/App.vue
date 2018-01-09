@@ -1,32 +1,45 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-          <a class="navbar-brand" href="#">Start Bootstrap</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          
-          <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="/">Home
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/mysale">My Sale</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    <router-view/>
+    <navigasi @navigasi-click="getAdmin" v-bind:admin="admin"></navigasi>
+    <div class="container">
+      <router-view @navigasi-click="getAdmin"></router-view>
+    </div>
+    <br />
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer> 
   </div>
 </template>
 
 <script>
+
+import Navigasi from './components/Navigasi'
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    Navigasi
+  },
+  data () {
+    return {
+      admin : false
+    }
+  },
+  methods:{
+    getAdmin(value){
+      if(localStorage.getItem('authUser')){
+        this.admin = true;
+      }else{
+        this.admin = false;
+      }
+    }
+  },
+  mounted(){
+    this.getAdmin()
+  }
 }
 </script>
 

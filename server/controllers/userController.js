@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 let signIn = (req, res) => {
+  
   const newUser = new User({
     first_name: req.body.first_name,
     last_name: req.body.last_name,
@@ -46,12 +47,13 @@ let signOut = (req, res) => {
       }
 
       jwt.sign({
+	      id: result._id,
         email: result.email,
         first: result.first_name
       }, process.env.SECRET_KEY, (err, token) => {
         res.status(200).json({
           msg: 'Login Sukses',
-          data: token
+          access_token: token
         })
       });
 
@@ -61,11 +63,22 @@ let signOut = (req, res) => {
     })
 };
 
-let logOut = (req, res) => {
-
-}
+let getUser = (req, res) => {
+  User.findOne({
+      _id: req.getData.id
+    })
+    .then((result) => {
+        res.status(200).json({
+          data: result
+        })
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    })
+};
 
 module.exports = {
   signIn,
-  signOut
+  signOut,
+  getUser
 }

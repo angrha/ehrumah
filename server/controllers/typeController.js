@@ -2,6 +2,10 @@ const Type = require('../models/typeModels');
 // const Images = require('../helpers/images');
 
 let createType = (req, res) => {
+
+  console.log(req.getData.id);
+  
+
   if (!req.file.cloudStoragePublicUrl) {
     res.status(500).json({
       msg: 'gambar tidak ada'
@@ -16,7 +20,7 @@ let createType = (req, res) => {
       type: req.body.type,
       luas: req.body.luas
     },
-    userId: req.body.userId,
+    userId: req.getData.id,
     image: req.file.cloudStoragePublicUrl,
     location: req.body.location
   });
@@ -62,7 +66,7 @@ let getDetail = (req, res) => {
 
 let getAllUser = (req, res) => {
   Type.find({
-      userId: '5a4e360bf044d7765a5a6cdc'
+      userId: req.getData.id
     })
     .then((results) => {
       res.status(200).json({
@@ -78,7 +82,7 @@ let getAllUser = (req, res) => {
 let getDetailUser = (req, res) => {
   Type.findOne({
       _id: req.params.id,
-      userId: '5a4e360bf044d7765a5a6cdc'
+      userId: req.getData.id
     })
     .then((result) => {
       res.status(200).json({
@@ -145,7 +149,7 @@ let updateTypeNo = (req, res) => {
 let removeType = (req, res) => {
   Type.remove({
       _id: req.params.id,
-      userId: '5a4e360bf044d7765a5a6cdc'
+      userId: req.getData.id
     })
     .then((result) => {
       res.status(200).json({

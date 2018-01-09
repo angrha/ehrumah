@@ -1,10 +1,13 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <div class="col-lg-9">               
-      <div class="row" >
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card h-100">
+  <div class="row">
+
+        <sidebar></sidebar>
+        <!-- /.col-lg-3 -->
+
+        <div class="col-lg-9">
+
+          <div class="row">
+          <div class="card col-lg-6 col-md-4 mb-4">
             <a href="#"><img class="card-img-top" v-bind:src="image" alt=""></a>
           </div>
         </div>
@@ -26,14 +29,18 @@
       <!-- /.row -->
 
     </div>
-  </div>
 </template>
 
 <script>
 
 import axios from 'axios'
 
+import Sidebar from './Sidebar'
+
 export default {
+  components: {
+    Sidebar
+  },
   data () {
     return {
       msg: 'Edit data',
@@ -47,7 +54,7 @@ export default {
       // userId: null, 
     }
   },
-  created () {
+  mounted () {
     axios.get(`http://localhost:3000/api/types/detail/${this.$route.params.id}`)
     .then((respone)=>{
       console.log(respone.data.data.name_item)
@@ -80,10 +87,14 @@ export default {
         // data.append('userId',this.userId);
         
         
-        axios.put(`http://localhost:3000/api/types/update/${this.$route.params.id}`,data)
+        axios.put(`http://localhost:3000/api/types/update/${this.$route.params.id}`, data,{
+          headers:{
+            token: localStorage.getItem('authUser')
+          }
+        })
         .then((respone)=>{
-          console.log(respone.data)
-          this.$router.push('/mysale');
+          // console.log(respone.data)
+          this.$router.push('/about/sale');
         })
         .catch((error)=>{
           console.log(error);
@@ -98,10 +109,14 @@ export default {
           luas: this.luas,
           sale: this.sale,
           location: this.location
+        },{
+          headers:{
+            token: localStorage.getItem('authUser')
+          }
         })
         .then((respone)=>{
-          console.log(respone.data)
-          this.$router.push('/mysale');
+          // console.log(respone.data)
+          this.$router.push('/about/sale');
         })
         .catch((error)=>{
           console.log(error);
