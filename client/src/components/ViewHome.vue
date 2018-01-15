@@ -1,4 +1,5 @@
 <template>
+  <div class="col-md-12">
   <div class="col-lg-4 col-md-6 mb-4">
     <div class="card h-100">
       <a href="#"><img class="card-img-top" :src="item.image" alt=""></a>
@@ -14,6 +15,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -21,4 +23,3 @@ export default {
   props: ['item']
 }
 </script>
-

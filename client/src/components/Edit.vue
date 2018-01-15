@@ -19,8 +19,18 @@
               <input v-model="type" placeholder="type">
               <input v-model="luas" placeholder="Luas Tanah">
               <input v-model="sale" placeholder="Sale">
+              <div class="col-md-10 offset-md-1">
+              <label>
+                AutoComplete
+                <GmapAutocomplete @place_changed="setPlace">
+                </GmapAutocomplete>
+              </label>
+
+              <gmap-map :center="center" :zoom="zoom" style="width: 100%; height: 600px">
+                <gmap-marker v-if="marker" :clickable="true" :position="marker.position" :draggable="true" @drag="markerChanged"> </gmap-marker>
+              </gmap-map>
+              </div>
               <input type="file" id="file">
-              <input v-model="location" placeholder="Location">
               <button type="button" @click="updateData">Save</button>
             </div>
           </div>
@@ -50,11 +60,12 @@ export default {
       type: null,
       luas: null,
       sale: null,
-      location: null
-      // userId: null, 
+      center: {},
+      zoom: 10,
+      marker: null 
     }
   },
-  mounted () {
+  created () {
     axios.get(`http://localhost:3000/api/types/detail/${this.$route.params.id}`)
     .then((respone)=>{
       console.log(respone.data.data.name_item)
@@ -63,8 +74,18 @@ export default {
       this.type = respone.data.data.specific.type;
       this.luas = respone.data.data.specific.luas;
       this.sale = respone.data.data.sale;
-      this.location = respone.data.data.location;
       this.image = respone.data.data.image;
+      this.marker = {
+        position: {
+          lat: Number(respone.data.data.lat),
+          lng: Number(respone.data.data.lng)
+        }
+      }
+      this.center = {
+        lat: Number(respone.data.data.lat),
+        lng: Number(respone.data.data.lng)
+      }
+        
       // this.userId = respone.data.data.userId;
     })
     .catch((error)=>{
@@ -83,10 +104,9 @@ export default {
         data.append('type',this.type);
         data.append('luas',this.luas);
         data.append('sale',this.sale);
-        data.append('location',this.location);
-        // data.append('userId',this.userId);
-        
-        
+        data.append('lat',this.marker.position.lat);
+        data.append('lng',this.marker.position.lng);
+
         axios.put(`http://localhost:3000/api/types/update/${this.$route.params.id}`, data,{
           headers:{
             token: localStorage.getItem('authUser')
@@ -108,7 +128,8 @@ export default {
           type: this.type,
           luas: this.luas,
           sale: this.sale,
-          location: this.location
+          lat: this.marker.position.lat,
+          lng: this.marker.position.lng
         },{
           headers:{
             token: localStorage.getItem('authUser')
@@ -123,6 +144,27 @@ export default {
         })
 
       }
+    },
+    setPlace: function(place) {
+      this.zoom = 12;
+      this.center = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+      this.marker = {
+        position: {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng()
+        }
+      };
+    },
+    markerChanged(xxx) {
+      this.marker = {
+        position: {
+          lat: xxx.latLng.lat(),
+          lng: xxx.latLng.lng()
+        }
+      };
     }
   }
 }

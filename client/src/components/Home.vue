@@ -5,7 +5,7 @@
         <div class="col-lg-12">
 
           <div class="row">
-
+            <search-list @search-data="getSearching"></search-list>
             <ViewHome v-for="item in items" :key="items" :item="item"></ViewHome>            
 
           </div>
@@ -21,13 +21,14 @@
 <script>
 
 import axios from 'axios'
-
+import SearchList from './SearchList'
 import ViewHome from './ViewHome'
 
 export default {
   name: 'Home',
   components:{
-    ViewHome
+    ViewHome,
+    SearchList
   },
   data () {
     return {
@@ -39,15 +40,24 @@ export default {
     getItems(){
       axios.get(`http://localhost:3000/api/types/all`)
       .then((response)=>{
-        console.log(response.data.data);
         this.items = response.data.data;
+      })
+      .catch((error)=>{
+        console.log(error)
+      })
+    },
+    getSearching (value) {
+      axios.get(`http://localhost:3000/api/types/search?name=${ value }`)
+      .then((response)=>{
+        this.items = response.data.data;
+        console.log(response.data.data);
       })
       .catch((error)=>{
         console.log(error)
       })
     }
   },
-  mounted () {
+  created () {
     this.getItems()
   }
 }

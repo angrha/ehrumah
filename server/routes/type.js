@@ -8,6 +8,7 @@ const Auth = require('../middleware/auto');
 router.post('/create', Auth.isLogin, Image.multer.single('image'), Image.sendUploadToGCS, Type.createType);
 router.get('/all', Type.getAll);
 router.get('/detail/:id', Type.getDetail);
+router.get('/search', Type.getSearch);
 router.get('/alluser', Auth.isLogin, Type.getAllUser);
 router.get('/detailuser/:id', Auth.isLogin, Type.getDetailUser);
 router.put('/update/:id', Auth.isLogin, Image.multer.single('image'), Image.sendUploadToGCS, Type.updateType);

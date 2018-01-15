@@ -20,6 +20,11 @@
               <p class="card-text">{{ item.userId.first_name }}</p>
             </div>
           </div>
+        </div>
+        <div class="col-lg-6 col-md-6 mb-4">
+          <gmap-map :center="center" :zoom="zoom" style="width: 100%; height: 600px;">
+            <gmap-marker :clickable="true" :position="marker.position" :draggable="true"> </gmap-marker>
+          </gmap-map>
         </div>      
       </div>
       <!-- /.row -->
@@ -37,14 +42,26 @@ export default {
   data () {
     return {
       msg: 'Detail',
-      item: []
+      item: [],
+      center: {},
+      zoom: 10,
+      marker: null
     }
   },
   created () {
     axios.get(`http://localhost:3000/api/types/detail/${this.$route.params.id}`)
     .then((respone)=>{
       this.item = respone.data.data;
-      // console.log(this.item)
+      this.marker = {
+        position: {
+          lat: Number(respone.data.data.lat),
+          lng: Number(respone.data.data.lng)
+        }
+      }
+      this.center = {
+        lat: Number(respone.data.data.lat),
+        lng: Number(respone.data.data.lng)
+      }
     })
     .catch((error)=>{
       console.log(error);

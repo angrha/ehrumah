@@ -22,7 +22,8 @@ let createType = (req, res) => {
     },
     userId: req.getData.id,
     image: req.file.cloudStoragePublicUrl,
-    location: req.body.location
+    lat: req.body.lat,
+    lng: req.body.lng
   });
 
   newType.save()
@@ -39,6 +40,24 @@ let createType = (req, res) => {
 
 let getAll = (req, res) => {
   Type.find()
+    .populate('userId')
+    .then((results) => {
+      res.status(200).json({
+        msg: 'sukses panggil data',
+        data: results
+      })
+    })
+    .catch(err => {
+      res.status(500).json(err)
+    })
+}
+
+let getSearch = (req, res) => {
+  Type.find({
+    $text: {
+      $search: req.query.name
+    }
+  })
     .populate('userId')
     .then((results) => {
       res.status(200).json({
@@ -105,7 +124,8 @@ let updateType = (req, res) => {
       luas: req.body.luas
     },
     image: req.file.cloudStoragePublicUrl,
-    location: req.body.location
+    lat: req.body.lat,
+    lng: req.body.lng
   }
   Type.update({
       _id: req.params.id
@@ -130,7 +150,8 @@ let updateTypeNo = (req, res) => {
       type: req.body.type,
       luas: req.body.luas
     },
-    location: req.body.location
+    lat: req.body.lat,
+    lng: req.body.lng
   }
   Type.update({
       _id: req.params.id
@@ -165,6 +186,7 @@ let removeType = (req, res) => {
 module.exports = {
   createType,
   getAll,
+  getSearch,
   getDetail,
   getAllUser,
   getDetailUser,

@@ -13,8 +13,18 @@
               <input v-model="type" placeholder="type">
               <input v-model="luas" placeholder="Luas Tanah">
               <input v-model="sale" placeholder="Sale">
+              <div class="col-md-10 offset-md-1">
+              <label>
+                AutoComplete
+                <GmapAutocomplete @place_changed="setPlace">
+                </GmapAutocomplete>
+              </label>
+
+              <gmap-map :center="center" :zoom="zoom" style="width: 100%; height: 600px">
+                <gmap-marker v-if="marker" :clickable="true" :position="marker.position" :draggable="true" @drag="markerChanged"> </gmap-marker>
+              </gmap-map>
+              </div>
               <input type="file" id="file">
-              <input v-model="location" placeholder="Location">
               <button type="button" @click="saveData">Save</button>
             </div>
           </div>
@@ -40,7 +50,12 @@ export default {
       type: null,
       luas: null,
       sale: null,
-      location: null 
+      center: {
+        lat: -2.4931,
+        lng: 118.471069
+      },
+      zoom: 10,
+      marker: null
     }
   },
   methods:{
@@ -53,10 +68,10 @@ export default {
       data.append('type',this.type);
       data.append('luas',this.luas);
       data.append('sale',this.sale);
-      data.append('location',this.location);
-      data.append('userId','5a4e360bf044d7765a5a6cdc');
-      
-      
+      data.append('lat',this.marker.position.lat);
+      data.append('lng',this.marker.position.lng);      
+      // data.append('userId','5a4e360bf044d7765a5a6cdc');
+            
       axios.post(`http://localhost:3000/api/types/create`, data,{
         headers:{
           token: localStorage.getItem('authUser')
@@ -68,6 +83,27 @@ export default {
       .catch((error)=>{
         console.log(error);
       })
+    },
+    setPlace: function(place) {
+      this.zoom = 12;
+      this.center = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+      this.marker = {
+        position: {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng()
+        }
+      };
+    },
+    markerChanged(xxx) {
+      this.marker = {
+        position: {
+          lat: xxx.latLng.lat(),
+          lng: xxx.latLng.lng()
+        }
+      };
     }
   }
 }

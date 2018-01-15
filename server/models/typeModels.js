@@ -27,8 +27,14 @@ const typeSchema = new Schema({
     ref: 'User'
   },
   image: String,
-  location: String
+  lat: String,
+  lng: String
 });
+
+typeSchema.index({
+  'name_item': 'text', 
+  'address': 'text' 
+})
 
 const Type = mongoose.model('Type', typeSchema);
 
