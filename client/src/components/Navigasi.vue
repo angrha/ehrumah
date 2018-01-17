@@ -47,7 +47,7 @@ export default {
   methods: {
     logOut(){
       localStorage.clear();
-      this.$emit('navigasi-click',false);  
+      this.$emit('navigasi-click',false);
       this.$router.push('/');
     }
   }
